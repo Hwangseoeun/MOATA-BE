@@ -1,5 +1,6 @@
 package com.moata.moata.entity.user;
 
+import com.moata.moata.constant.UserTelcoType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,14 +22,14 @@ public class User {
     @Column(name = "phone", nullable = false)
     private long phone;
 
-    @Column(name = "telco", nullable = false, length = 10)
-    private String telco;
+    @Column(name = "telco")
+    private UserTelcoType telco;
 
     @Column(name = "location", nullable = false)
     private String location;
 
     @Builder
-    public User(String name, long phone, String telco, String location) {
+    public User(String name, long phone, UserTelcoType telco, String location) {
         this.name = name;
         this.phone = phone;
         this.telco = telco;

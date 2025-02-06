@@ -1,5 +1,6 @@
 package com.moata.moata.dto.user;
 
+import com.moata.moata.constant.UserTelcoType;
 import com.moata.moata.entity.user.User;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import lombok.Data;
 public class UserSaveRequest {
     private String name;
     private long phone;
-    private String telco;
+    private UserTelcoType telco;
     private String location;
 
     public User toModel() {

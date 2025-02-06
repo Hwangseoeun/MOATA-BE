@@ -1,5 +1,6 @@
 package com.moata.moata.dto.user;
 
+import com.moata.moata.constant.UserTelcoType;
 import com.moata.moata.entity.user.User;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,7 @@ public class UserResponse {
     private long userId;
     private String name;
     private long phone;
-    private String telco;
+    private UserTelcoType telco;
     private String location;
 
     public UserResponse from(User user) {
