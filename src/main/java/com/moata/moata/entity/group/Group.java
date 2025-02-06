@@ -43,8 +43,12 @@ public class Group {
     @Column(name = "car_model_name")
     private String carModelName;
 
+    @Column(name = "matched_count", nullable = false)
+    @ColumnDefault("0")
+    private int matchedCount;
+
     @Builder
-    public Group(User ownerId, Boolean hasCar, String favoriteArea, int coOwnerMax, int carUseFrequency, String carType, String carModelName) {
+    public Group(User ownerId, Boolean hasCar, String favoriteArea, int coOwnerMax, int carUseFrequency, String carType, String carModelName, int matchedCount) {
         this.ownerId = ownerId;
         this.hasCar = hasCar;
         this.favoriteArea = favoriteArea;
@@ -52,5 +56,6 @@ public class Group {
         this.carUseFrequency = carUseFrequency;
         this.carType = carType;
         this.carModelName = carModelName;
+        this.matchedCount = matchedCount;
     }
 }
