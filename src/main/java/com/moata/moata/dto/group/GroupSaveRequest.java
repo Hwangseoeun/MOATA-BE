@@ -6,19 +6,24 @@ import lombok.Data;
 
 @Data
 public class GroupSaveRequest {
-    private long ownerId;
+    private User ownerId;
+    private Boolean hasCar;
     private String favoriteArea;
     private int coOwnerMax;
     private int carUseFrequency;
     private String carType;
+    private String carModelName;
 
-    public Group toModel(User user) {
+    //추후 해당 부분에 토큰 정보를 통해 대푶자 회원 번호(owner_id) 저장해야 함
+    public Group toModel() {
         return Group.builder()
-                .ownerId(user)
+                .ownerId(ownerId)
+                .hasCar(hasCar)
                 .favoriteArea(favoriteArea)
                 .coOwnerMax(coOwnerMax)
                 .carUseFrequency(carUseFrequency)
-                .carType(favoriteArea)
+                .carType(carType)
+                .carModelName(carModelName)
                 .build();
     }
 }
