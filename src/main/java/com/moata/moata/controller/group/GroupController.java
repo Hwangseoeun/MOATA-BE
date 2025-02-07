@@ -4,15 +4,14 @@ import com.moata.moata.dto.group.*;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.service.group.GroupService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class GroupController {
@@ -20,7 +19,8 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping("/group")
-    public ResponseEntity<GroupSaveResponse> saveGroup(GroupSaveRequest request) {
+    public ResponseEntity<GroupSaveResponse> saveGroup(@RequestBody GroupSaveRequest request) {
+//        log.info("group save request: {}", request);
         try {
             Group group = groupService.saveGroup(request);
             return ResponseEntity.status(HttpStatus.CREATED)

@@ -5,34 +5,41 @@ import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.group.GroupSaveRequest;
 import com.moata.moata.dto.group.GroupSearchCondition;
 import com.moata.moata.entity.group.Group;
+import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.group.GroupRepository;
+import com.moata.moata.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class GroupService {
 
+    private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
+    @Transactional
     public Group saveGroup(GroupSaveRequest request) {
-        return groupRepository.save(request.toModel());
+        final User user = userRepository.findById(request.getOwnerId())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id is not found", request.getOwnerId())));
+        return groupRepository.save(request.toModel(user));
     }
 
     public List<GroupInfoResponse> findAllGroups() {
         return groupRepository.findAll().stream()
                 .map(GroupInfoResponse::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<GroupInfoResponse> searchGroups(GroupSearchCondition condition) {
         return groupRepository.searchGroups(condition).stream()
                 .map(GroupInfoResponse::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public GroupDetailInfoResponse findGroupByGroupId(Long groupId) {
