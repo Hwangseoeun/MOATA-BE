@@ -1,15 +1,13 @@
 package com.moata.moata.controller.group;
 
-import com.moata.moata.dto.group.GroupInfoResponse;
-import com.moata.moata.dto.group.GroupSaveRequest;
-import com.moata.moata.dto.group.GroupSaveResponse;
-import com.moata.moata.dto.group.GroupSearchCondition;
+import com.moata.moata.dto.group.*;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.service.group.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,5 +46,11 @@ public class GroupController {
     @GetMapping("/group/search")
     public ResponseEntity<List<GroupInfoResponse>> searchGroups(GroupSearchCondition condition) {
         return ResponseEntity.ok().body(groupService.searchGroups(condition));
+    }
+
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<GroupDetailInfoResponse> detailGroupInfo(@PathVariable("groupId") Long groupId) {
+        GroupDetailInfoResponse response = groupService.findGroupByGroupId(groupId);
+        return ResponseEntity.ok().body(response);
     }
 }

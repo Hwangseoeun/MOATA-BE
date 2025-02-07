@@ -1,10 +1,12 @@
 package com.moata.moata.service.group;
 
+import com.moata.moata.dto.group.GroupDetailInfoResponse;
 import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.group.GroupSaveRequest;
 import com.moata.moata.dto.group.GroupSearchCondition;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.repository.group.GroupRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,11 @@ public class GroupService {
         return groupRepository.searchGroups(condition).stream()
                 .map(GroupInfoResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public GroupDetailInfoResponse findGroupByGroupId(Long groupId) {
+        Group group = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
+        return GroupDetailInfoResponse.from(group);
     }
 }
