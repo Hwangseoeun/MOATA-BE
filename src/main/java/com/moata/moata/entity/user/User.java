@@ -22,6 +22,7 @@ public class User {
     @Column(name = "phone", nullable = false)
     private long phone;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "telco")
     private UserTelcoType telco;
 
