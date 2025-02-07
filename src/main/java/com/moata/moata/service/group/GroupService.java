@@ -2,6 +2,7 @@ package com.moata.moata.service.group;
 
 import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.group.GroupSaveRequest;
+import com.moata.moata.dto.group.GroupSearchCondition;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.repository.group.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,12 @@ public class GroupService {
 
     public List<GroupInfoResponse> findAllGroups() {
         return groupRepository.findAll().stream()
+                .map(GroupInfoResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<GroupInfoResponse> searchGroups(GroupSearchCondition condition) {
+        return groupRepository.searchGroups(condition).stream()
                 .map(GroupInfoResponse::from)
                 .collect(Collectors.toList());
     }
