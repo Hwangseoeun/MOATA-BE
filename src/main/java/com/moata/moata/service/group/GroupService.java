@@ -72,6 +72,7 @@ public class GroupService {
         return groupRepository.searchGroups(condition).stream()
                 .map(GroupInfoResponse::from)
                 .collect(Collectors.toList());
+                .toList();
     }
 
     public GroupDetailInfoResponse findGroupByGroupId(Long groupId) {
