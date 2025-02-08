@@ -53,4 +53,11 @@ public class GroupController {
         GroupDetailInfoResponse response = groupService.findGroupByGroupId(groupId);
         return ResponseEntity.ok().body(response);
     }
+
+    //추후 쿼리 파라미터를 통한 userId 값을 받는 것이 아닌 jwt를 통해 조회하는 방식으로 수정 예정
+    @GetMapping("/group/recommendations/{userId}")
+    public ResponseEntity<List<GroupDetailInfoResponse>> findMatchingGroups(@PathVariable Long userId) {
+        List<GroupDetailInfoResponse> groups = groupService.getMatchingUsers(userId);
+        return ResponseEntity.ok().body(groups);
+    }
 }

@@ -47,4 +47,24 @@ public class GroupService {
                 .orElseThrow(() -> new EntityNotFoundException("Group not found"));
         return GroupDetailInfoResponse.from(group);
     }
+
+    public List<GroupDetailInfoResponse> getMatchingUsers(Long userId) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id is not found", userId)));
+
+        Group group = groupRepository.findByOwnerId(user)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found for User ID: " + userId));
+
+        List<Group> matchedGroups = groupRepository.findBestMatches(
+                group.getHasCar(),
+                group.getCarType(),
+                group.getCarModelName(),
+                group.getCoOwnerMax(),
+                group.getCarUseFrequency()
+        );
+
+        return matchedGroups.stream()
+                .map(GroupDetailInfoResponse::from)
+                .toList();
+    }
 }
