@@ -1,4 +1,3 @@
-    public ResponseEntity<GroupSaveResponse> saveGroup(GroupSaveRequest request) {
 package com.moata.moata.controller.group;
 
 import com.moata.moata.dto.group.*;
