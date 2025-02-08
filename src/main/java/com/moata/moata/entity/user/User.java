@@ -19,8 +19,8 @@ public class User {
     @Column(name = "name", nullable = false, length = 10)
     private String name;
 
-    @Column(name = "phone", nullable = false)
-    private long phone;
+    @Column(name = "phone", nullable = false, length = 11)
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "telco")
@@ -30,7 +30,7 @@ public class User {
     private String location;
 
     @Builder
-    public User(String name, long phone, UserTelcoType telco, String location) {
+    public User(String name, String phone, UserTelcoType telco, String location) {
         this.name = name;
         this.phone = phone;
         this.telco = telco;

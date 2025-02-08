@@ -10,7 +10,7 @@ import lombok.Data;
 public class UserResponse {
     private long userId;
     private String name;
-    private long phone;
+    private String phone;
     private UserTelcoType telco;
     private String location;
 
