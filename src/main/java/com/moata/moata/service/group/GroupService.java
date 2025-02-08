@@ -67,4 +67,10 @@ public class GroupService {
                 .map(GroupDetailInfoResponse::from)
                 .toList();
     }
+
+    public List<GroupInfoResponse> searchGroups(GroupSearchCondition condition) {
+        return groupRepository.searchGroups(condition).stream()
+                .map(GroupInfoResponse::from)
+                .collect(Collectors.toList());
+    }
 }
