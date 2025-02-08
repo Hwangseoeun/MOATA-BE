@@ -1,3 +1,4 @@
+import com.moata.moata.entity.group.Group;
 package com.moata.moata.repository.group;
 
 import com.moata.moata.entity.group.Group;

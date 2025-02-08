@@ -67,4 +67,17 @@ public class GroupService {
                 .map(GroupDetailInfoResponse::from)
                 .toList();
     }
+
+    public List<GroupInfoResponse> searchGroups(GroupSearchCondition condition) {
+        return groupRepository.searchGroups(condition).stream()
+                .map(GroupInfoResponse::from)
+                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public GroupDetailInfoResponse findGroupByGroupId(Long groupId) {
+        Group group = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
+        return GroupDetailInfoResponse.from(group);
+    }
 }
