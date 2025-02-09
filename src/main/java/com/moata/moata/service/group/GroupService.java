@@ -67,4 +67,9 @@ public class GroupService {
                 .map(GroupDetailInfoResponse::from)
                 .toList();
     }
+
+    @Transactional
+    public void increaseMatchedCount(Long groupId) {
+        groupRepository.incrementMatchedCount(groupId);
+    }
 }

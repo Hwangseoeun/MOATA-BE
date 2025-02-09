@@ -60,4 +60,22 @@ public class GroupController {
         List<GroupDetailInfoResponse> groups = groupService.getMatchingUsers(userId);
         return ResponseEntity.ok().body(groups);
     }
+
+    @PutMapping("/group/matching/{groupId}")
+    public ResponseEntity<GroupMatchingResponse> updateMatchedCount(@PathVariable Long groupId) {
+        try {
+            groupService.increaseMatchedCount(groupId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(GroupMatchingResponse.builder()
+                            .isSuccess(true)
+                            .code(200)
+                            .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(GroupMatchingResponse.builder()
+                            .isSuccess(false)
+                            .code(400)
+                            .build());
+        }
+    }
 }

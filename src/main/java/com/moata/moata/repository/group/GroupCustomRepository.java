@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface GroupCustomRepository {
     List<Group> searchGroups(GroupSearchCondition condition);
+    void incrementMatchedCount(Long groupId);
 }

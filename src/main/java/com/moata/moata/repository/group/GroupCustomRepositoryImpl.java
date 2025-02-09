@@ -2,6 +2,7 @@ package com.moata.moata.repository.group;
 
 import com.moata.moata.dto.group.GroupSearchCondition;
 import com.moata.moata.entity.group.Group;
+import com.moata.moata.entity.group.QGroup;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,15 @@ public class GroupCustomRepositoryImpl implements GroupCustomRepository {
                 .selectFrom(group)
                 .where(builder)
                 .fetch();
+    }
+
+    @Override
+    public void incrementMatchedCount(Long groupId) {
+        QGroup group = QGroup.group;
+
+        queryFactory.update(group)
+                .set(group.matchedCount, group.matchedCount.add(1))  // matched_count + 1 증가
+                .where(group.groupId.eq(groupId))
+                .execute();
     }
 }
