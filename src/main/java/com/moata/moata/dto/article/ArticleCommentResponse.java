@@ -14,7 +14,7 @@ public class ArticleCommentResponse {
     private LocalDateTime createdAt;
     private String createdBy;
 
-    public ArticleCommentResponse from(ArticleComment articleComment) {
+    public static ArticleCommentResponse from(ArticleComment articleComment) {
         return ArticleCommentResponse.builder()
                 .commentId(articleComment.getCommentId())
                 .content(articleComment.getContent())
