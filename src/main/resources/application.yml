@@ -12,3 +12,12 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+jwt:
+  issuer: ${JWT_ISSUER}
+  secret-key: ${JWT_SECRET_KEY}
+
+kakao:
+  redirect-uri: ${REDIRECT_URI}
+  key:
+    client-id: ${CLIENT_ID}
