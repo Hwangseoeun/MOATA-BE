@@ -2,6 +2,7 @@ package com.moata.moata.controller.user;
 
 import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.user.AuthTokens;
+import com.moata.moata.dto.user.UserLocationSaveRequest;
 import com.moata.moata.dto.user.UserProfileResponse;
 import com.moata.moata.service.user.KakaoService;
 import com.moata.moata.service.user.UserService;
@@ -9,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
@@ -42,5 +40,14 @@ public class UserController {
 
         UserProfileResponse response = userService.findUserProfileByUserId(userId);
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/user/my/location")
+    public ResponseEntity<HttpStatus> saveUserLocation(Authentication authentication, @RequestBody UserLocationSaveRequest request){
+
+        Long userId = Long.parseLong(authentication.getName());
+
+        userService.saveUserLocation(userId, request);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

@@ -3,6 +3,7 @@ package com.moata.moata.entity.user;
 import com.moata.moata.constant.UserTelcoType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -29,11 +30,24 @@ public class User {
     @Column(name = "location")
     private String location;
 
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
+    @Column(name = "shared_car_cnt", nullable = false)
+    @ColumnDefault("0")
+    private int sharedCarCnt;
+
     @Builder
-    public User(String name, String phone, UserTelcoType telco, String location) {
+    public User(String name, String phone, UserTelcoType telco, String location, double latitude, double longitude, int sharedCarCnt) {
         this.name = name;
         this.phone = phone;
         this.telco = telco;
         this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.sharedCarCnt = sharedCarCnt;
     }
 }
