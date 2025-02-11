@@ -1,5 +1,6 @@
 package com.moata.moata.service.jwt;
 
+import com.moata.moata.common.UnauthorizedException;
 import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.service.user.UserService;
@@ -18,12 +19,12 @@ public class TokenService {
 
     public String createNewAccessToken(String refreshToken) {
         if(!tokenProvider.validToken(refreshToken)) {
-            throw new IllegalArgumentException("Unexpected token");
+            throw new UnauthorizedException("Invalid or expired refresh token.");
         }
 
         Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUser().getUserId();
         User user = userService.findById(userId);
 
-        return tokenProvider.generateToken(user, Duration.ofHours(2));
+        return tokenProvider.generateToken(user, Duration.ofHours(1));
     }
 }
