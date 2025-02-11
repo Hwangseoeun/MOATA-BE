@@ -19,14 +19,14 @@ public class User {
     @Column(name = "name", nullable = false, length = 10)
     private String name;
 
-    @Column(name = "phone", nullable = false, length = 11)
+    @Column(name = "phone", length = 11)
     private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "telco")
     private UserTelcoType telco;
 
-    @Column(name = "location", nullable = false)
+    @Column(name = "location")
     private String location;
 
     @Builder
