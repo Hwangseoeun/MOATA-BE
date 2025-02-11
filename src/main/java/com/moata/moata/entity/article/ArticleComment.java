@@ -34,11 +34,11 @@ public class ArticleComment {
     private boolean commentBool;
 
     @Builder
-    public ArticleComment(Article articleId, String content, LocalDateTime createdAt, String createdBy, Boolean isComment) {
+    public ArticleComment(Article articleId, String content, LocalDateTime createdAt, String createdBy, Boolean commentBool) {
         this.articleId = articleId;
         this.content = content;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
-        this.commentBool = isComment;
+        this.commentBool = commentBool;
     }
 }
