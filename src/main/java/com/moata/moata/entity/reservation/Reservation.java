@@ -1,6 +1,7 @@
 package com.moata.moata.entity.reservation;
 
 import com.moata.moata.constant.RideSharingRole;
+import com.moata.moata.dto.reservation.ReservationRideSharingRequest;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.user.User;
 import jakarta.persistence.*;
@@ -61,5 +62,9 @@ public class Reservation {
         this.departure = departure;
         this.destination = destination;
         this.pickupPoint = pickupPoint;
+    }
+
+    public void addRideSharing(ReservationRideSharingRequest reservationRideSharingRequest) {
+        this.pickupPoint = reservationRideSharingRequest.getPickUpPoint();
     }
 }

@@ -10,6 +10,6 @@ public interface ArticleCommentRepository extends JpaRepository<ArticleComment, 
     List<ArticleComment> findByArticleIdAndComment(Article article, Boolean isComment);
     Boolean existsByArticleIdAndCreatedByAndComment(Article article, String userName, Boolean isComment);
     void deleteByArticleId(Article article);
-    void deleteByArticleIdAndCreatedByAndComment(Article article, String createdBy, Boolean isComment);
-    int countByArticleIdAndComment(Article article, Boolean isComment);
+    void deleteByArticleIdAndCreatedByAndCommentBool(Article article, String createdBy, Boolean isComment);
+    int countByArticleIdAndCommentBool(Article article, Boolean isComment);
 }
