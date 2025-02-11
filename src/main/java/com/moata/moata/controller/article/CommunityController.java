@@ -4,6 +4,8 @@ import com.moata.moata.dto.article.ArticleCommentSaveRequest;
 import com.moata.moata.dto.article.ArticleResponse;
 import com.moata.moata.dto.article.ArticleSaveRequest;
 import com.moata.moata.dto.article.ArticleWithCommentResponse;
+import com.moata.moata.dto.group.GroupRuleResponse;
+import com.moata.moata.dto.group.GroupRuleSaveRequest;
 import com.moata.moata.service.article.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/community")
+@RequestMapping("/community")
 public class CommunityController {
 
     private final ArticleService articleService;
@@ -32,9 +34,14 @@ public class CommunityController {
         return ResponseEntity.ok().body(articleService.findByKeywordOrUserId(keyword, userId, userName));
     }
 
-    @GetMapping("{article-id}")
-    public ResponseEntity<ArticleWithCommentResponse> getArticleWithComment(@PathVariable("article-id") long articleId) {
+    @GetMapping("{article_id}")
+    public ResponseEntity<ArticleWithCommentResponse> getArticleWithComment(@PathVariable("article_id") long articleId) {
         return ResponseEntity.ok().body(articleService.findByIdWithComment(articleId));
+    }
+
+    @GetMapping("rule")
+    public ResponseEntity<GroupRuleResponse> getGroupRule() {
+        return ResponseEntity.ok().body(articleService.findGroupRule());
     }
 
     @PostMapping
@@ -43,8 +50,15 @@ public class CommunityController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("{article-id}")
-    public ResponseEntity<String> saveComment(@PathVariable("article-id") long articleId, @RequestBody ArticleCommentSaveRequest articleCommentSaveRequest ) {
+    @PostMapping("rule")
+    public ResponseEntity<String> saveGroupRule(@AuthenticationPrincipal long userId,
+                                                @RequestBody GroupRuleSaveRequest groupRuleSaveRequest) {
+        articleService.saveGroupRule(userId, groupRuleSaveRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("{article_id}")
+    public ResponseEntity<String> saveComment(@PathVariable("article_id") long articleId, @RequestBody ArticleCommentSaveRequest articleCommentSaveRequest ) {
         articleService.saveComment(articleId, articleCommentSaveRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -55,14 +69,14 @@ public class CommunityController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{article-id}")
-    public ResponseEntity<String> deleteArticle(@PathVariable("article-id") long articleId) {
+    @DeleteMapping("{article_id}")
+    public ResponseEntity<String> deleteArticle(@PathVariable("article_id") long articleId) {
         articleService.deleteArticle(articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("comment/{comment-id}")
-    public ResponseEntity<String> deleteComment(@PathVariable("comment-id") long commentId) {
+    @DeleteMapping("comment/{comment_id}")
+    public ResponseEntity<String> deleteComment(@PathVariable("comment_id") long commentId) {
         articleService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
