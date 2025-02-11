@@ -1,5 +1,6 @@
 package com.moata.moata.controller.user;
 
+import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.user.*;
 import com.moata.moata.service.user.KakaoService;
 import com.moata.moata.service.user.UserService;
@@ -10,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -90,5 +92,12 @@ public class UserController {
         userService.deleteLike(likerId, targetId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/user/like")
+    public ResponseEntity<List<GroupInfoResponse>> getLikedUsers(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        List<GroupInfoResponse> likedUsers = userService.getLikedUsers(userId);
+        return ResponseEntity.ok().body(likedUsers);
     }
 }

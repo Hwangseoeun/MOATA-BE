@@ -1,22 +1,28 @@
 package com.moata.moata.service.user;
 
+import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.user.UserLocationSaveRequest;
 import com.moata.moata.dto.user.UserLocationUpdateRequest;
 import com.moata.moata.dto.user.UserNameUpdateRequest;
 import com.moata.moata.dto.user.UserProfileResponse;
+import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.user.LikeUser;
 import com.moata.moata.entity.user.User;
+import com.moata.moata.repository.group.GroupRepository;
 import com.moata.moata.repository.user.LikeUserRepository;
 import com.moata.moata.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
     private final LikeUserRepository likeUserRepository;
 
     public User findById(Long userId) {
@@ -82,5 +88,19 @@ public class UserService {
 
         LikeUser likeUser = new LikeUser(liker, target);
         likeUserRepository.delete(likeUser);
+    }
+
+    public List<GroupInfoResponse> getLikedUsers(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Group group = groupRepository.findByOwnerId(user)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
+
+        List<LikeUser> likedUsers = likeUserRepository.findAllByLiker(user);
+
+        return likedUsers.stream()
+                .map(like -> GroupInfoResponse.from(group))
+                .toList();
     }
 }
