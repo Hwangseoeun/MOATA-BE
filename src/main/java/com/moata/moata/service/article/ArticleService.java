@@ -1,11 +1,18 @@
 package com.moata.moata.service.article;
 
 import com.moata.moata.dto.article.*;
+import com.moata.moata.dto.group.GroupRuleResponse;
+import com.moata.moata.dto.group.GroupRuleSaveRequest;
 import com.moata.moata.entity.article.Article;
 import com.moata.moata.entity.article.ArticleComment;
 import com.moata.moata.entity.group.Group;
+import com.moata.moata.entity.group.GroupRule;
+import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.article.ArticleCommentRepository;
 import com.moata.moata.repository.article.ArticleRepository;
+import com.moata.moata.repository.group.GroupRepository;
+import com.moata.moata.repository.group.GroupRuleRepository;
+import com.moata.moata.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +27,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
     private final GroupRepository groupRepository;
+    private final GroupRuleRepository groupRuleRepository;
     private final UserRepository userRepository;
 
     public List<ArticleResponse> findAll(long userId) {
@@ -34,7 +42,7 @@ public class ArticleService {
 
     private List<ArticleResponse> entityToResponse(List<Article> articles, long userId) {
         //유저 구현 시 사용
-        String userName = userRepository.findByUserId(userId)
+        String userName = userRepository.findUserNameByUserId(userId)
                                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
 
         return articles.stream().map(article -> {
@@ -52,6 +60,11 @@ public class ArticleService {
         return ArticleWithCommentResponse.from(article, comments);
     }
 
+    public GroupRuleResponse findGroupRule() {
+        List<GroupRule> groupRules = groupRuleRepository.findAll();
+        return GroupRuleResponse.from(groupRules.get(0));
+    }
+
     public void saveArticle(ArticleSaveRequest articleSaveRequest) {
         Group group = groupRepository.findByGroupId(articleSaveRequest.getGroupId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹"));
@@ -66,17 +79,25 @@ public class ArticleService {
 
     public void saveLike(long articleId, long userId) {
         Article article = articleRepository.findByArticleId(articleId).orElseThrow(NoSuchElementException::new);
-        String userName = userRepository.findByUserId(userId)
+        String userName = userRepository.findUserNameByUserId(userId)
                                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
 
         ArticleComment like = ArticleComment.builder()
                 .articleId(article)
                 .createdAt(LocalDateTime.now())
-                .createdBy("user")
+                .createdBy(userName)
                 .isComment(false)
                 .build();
 
         articleCommentRepository.save(like);
+    }
+
+    public void saveGroupRule(long userId, GroupRuleSaveRequest groupRuleSaveRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자"));
+        Group group = groupRepository.findByOwnerId(user)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 그룹"));
+        groupRuleRepository.save(groupRuleSaveRequest.toModel(group));
     }
 
     @Transactional
@@ -92,10 +113,10 @@ public class ArticleService {
     }
 
     public void deleteLike(long userId, long articleId) {
-        String userName = userRepository.findByUserId(userId)
+        String userName = userRepository.findUserNameByUserId(userId)
                                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
 
         Article article = articleRepository.findById(articleId).orElseThrow(NoSuchElementException::new);
-        articleCommentRepository.deleteByArticleIdAndCreatedByAndComment(article, "placeholder",false);
+        articleCommentRepository.deleteByArticleIdAndCreatedByAndComment(article, userName,false);
     }
 }
