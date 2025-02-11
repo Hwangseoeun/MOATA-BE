@@ -17,6 +17,7 @@ public class ArticleCommentSaveRequest {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .createdBy(createdBy)
+                .isComment(true)
                 .build();
     }
 }
