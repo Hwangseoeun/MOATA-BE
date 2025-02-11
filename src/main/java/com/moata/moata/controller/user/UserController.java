@@ -1,6 +1,5 @@
 package com.moata.moata.controller.user;
 
-import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.user.*;
 import com.moata.moata.service.user.KakaoService;
 import com.moata.moata.service.user.UserService;
@@ -18,7 +17,6 @@ import java.util.NoSuchElementException;
 public class UserController {
 
     private final KakaoService kakaoService;
-    private final TokenProvider tokenProvider;
     private final UserService userService;
 
     @ResponseBody
@@ -74,5 +72,14 @@ public class UserController {
 
         userService.deleteUser(userId);
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/user/like/{groupId}")
+    public ResponseEntity<HttpStatus> likeUser(Authentication authentication, @PathVariable("groupId") Long targetId){
+        Long likerId = Long.parseLong(authentication.getName());
+
+        userService.likePost(likerId, targetId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

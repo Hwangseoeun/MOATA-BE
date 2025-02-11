@@ -4,7 +4,9 @@ import com.moata.moata.dto.user.UserLocationSaveRequest;
 import com.moata.moata.dto.user.UserLocationUpdateRequest;
 import com.moata.moata.dto.user.UserNameUpdateRequest;
 import com.moata.moata.dto.user.UserProfileResponse;
+import com.moata.moata.entity.user.LikeUser;
 import com.moata.moata.entity.user.User;
+import com.moata.moata.repository.user.LikeUserRepository;
 import com.moata.moata.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final LikeUserRepository likeUserRepository;
 
     public User findById(Long userId) {
         return userRepository.findById(userId)
@@ -49,5 +52,20 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         userRepository.delete(user);
+    }
+
+    public void likePost(Long likerId, Long targetId) {
+        User liker = userRepository.findById(likerId)
+                .orElseThrow(() -> new EntityNotFoundException("Liker user not found"));
+
+        User target = userRepository.findById(targetId)
+                .orElseThrow(() -> new EntityNotFoundException("Target user not found"));
+
+        if (likeUserRepository.existsByLikerAndTarget(liker, target)) {
+            throw new IllegalStateException("Already liked this user.");
+        }
+
+        LikeUser likeUser = new LikeUser(liker, target);
+        likeUserRepository.save(likeUser);
     }
 }
