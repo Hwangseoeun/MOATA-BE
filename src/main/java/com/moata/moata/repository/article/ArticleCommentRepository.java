@@ -9,8 +9,6 @@ import java.util.List;
 public interface ArticleCommentRepository extends JpaRepository<ArticleComment, Long> {
     List<ArticleComment> findByArticleIdAndComment(Article article, Boolean isComment);
     Boolean existsByArticleIdAndCreatedByAndComment(Article article, String userName, Boolean isComment);
-    ArticleComment save(ArticleComment articleComment);
-    void deleteById(Long id);
     void deleteByArticleId(Article article);
     void deleteByArticleIdAndCreatedByAndComment(Article article, String createdBy, Boolean isComment);
     int countByArticleIdAndComment(Article article, Boolean isComment);
