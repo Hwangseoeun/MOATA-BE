@@ -66,4 +66,13 @@ public class UserController {
         userService.updateUserLocation(userId, request);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/user/my")
+    public ResponseEntity<HttpStatus> deleteUserById(Authentication authentication){
+
+        Long userId = Long.parseLong(authentication.getName());
+
+        userService.deleteUser(userId);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
 }

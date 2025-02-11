@@ -44,4 +44,10 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         return userRepository.save(request.toModel());
     }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        userRepository.delete(user);
+    }
 }
