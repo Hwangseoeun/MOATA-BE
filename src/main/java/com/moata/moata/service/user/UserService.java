@@ -1,6 +1,7 @@
 package com.moata.moata.service.user;
 
 import com.moata.moata.dto.user.UserLocationSaveRequest;
+import com.moata.moata.dto.user.UserNameUpdateRequest;
 import com.moata.moata.dto.user.UserProfileResponse;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.user.UserRepository;
@@ -26,6 +27,12 @@ public class UserService {
     }
 
     public User saveUserLocation(Long userId, UserLocationSaveRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userRepository.save(request.toModel());
+    }
+
+    public User updateUserName(Long userId, UserNameUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         return userRepository.save(request.toModel());
