@@ -46,8 +46,8 @@ public class ArticleService {
                                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
 
         return articles.stream().map(article -> {
-            int commentCount = articleCommentRepository.countByArticleIdAndComment(article, true);
-            int likeCount = articleCommentRepository.countByArticleIdAndComment(article, false);
+            int commentCount = articleCommentRepository.countByArticleIdAndCommentBool(article, true);
+            int likeCount = articleCommentRepository.countByArticleIdAndCommentBool(article, false);
             boolean liked = articleCommentRepository.existsByArticleIdAndCreatedByAndComment(article, userName, false);
             return ArticleResponse.from(article, commentCount, likeCount, liked);
         }).toList();
@@ -117,6 +117,6 @@ public class ArticleService {
                                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
 
         Article article = articleRepository.findById(articleId).orElseThrow(NoSuchElementException::new);
-        articleCommentRepository.deleteByArticleIdAndCreatedByAndComment(article, userName,false);
+        articleCommentRepository.deleteByArticleIdAndCreatedByAndCommentBool(article, userName,false);
     }
 }

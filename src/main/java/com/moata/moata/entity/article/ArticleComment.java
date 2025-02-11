@@ -30,8 +30,8 @@ public class ArticleComment {
     @Column(name = "created_by", nullable = false, length = 10)
     private String createdBy;
 
-    @Column(name = "is_comment", nullable = false)
-    private boolean isComment;
+    @Column(name = "comment_bool", nullable = false)
+    private boolean commentBool;
 
     @Builder
     public ArticleComment(Article articleId, String content, LocalDateTime createdAt, String createdBy, Boolean isComment) {
@@ -39,6 +39,6 @@ public class ArticleComment {
         this.content = content;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
-        this.isComment = isComment;
+        this.commentBool = isComment;
     }
 }
