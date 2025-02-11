@@ -14,8 +14,8 @@ public class InfoService {
 
     private final InfoRepository infoRepository;
 
-    public List<InfoResponse> findInfoByType(String type) {
-        return infoRepository.findByType(InfoType.valueOf(type.toUpperCase())).stream()
+    public List<InfoResponse> findInfoByType(InfoType type) {
+        return infoRepository.findByType(type).stream()
                 .map(InfoResponse::from)
                 .toList();
     }

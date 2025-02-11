@@ -1,5 +1,6 @@
 package com.moata.moata.controller.info;
 
+import com.moata.moata.constant.InfoType;
 import com.moata.moata.dto.info.InfoResponse;
 import com.moata.moata.service.info.InfoService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,10 @@ public class InfoController {
 
     @GetMapping("/info/{type}")
     public ResponseEntity<List<InfoResponse>> findInfo(@PathVariable("type") String type) {
-        List<InfoResponse> infos = infoService.findInfoByType(type);
+
+        InfoType infoType = InfoType.from(type);
+        List<InfoResponse> infos = infoService.findInfoByType(infoType);
+
         return ResponseEntity.ok().body(infos);
     }
 }

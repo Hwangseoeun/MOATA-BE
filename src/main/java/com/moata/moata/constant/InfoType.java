@@ -8,7 +8,15 @@ public enum InfoType {
 
     @JsonCreator
     public static InfoType from(String value) {
-        return InfoType.valueOf(value.toUpperCase());
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("InfoType cannot be null or empty");
+        }
+
+        try {
+            return InfoType.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid InfoType: " + value + ". Allowed values: NOTICE, FAQ");
+        }
     }
 
     @JsonValue
