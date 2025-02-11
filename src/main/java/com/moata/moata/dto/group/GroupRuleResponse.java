@@ -13,7 +13,7 @@ public class GroupRuleResponse {
     private String parkingLocation;
     private String etc;
 
-    public GroupRuleResponse from(GroupRule rule) {
+    public static GroupRuleResponse from(GroupRule rule) {
         return GroupRuleResponse.builder()
                 .groupId(rule.getGroupId().getGroupId())
                 .washingFrequency(rule.getWashingFrequency())

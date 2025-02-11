@@ -16,7 +16,7 @@ public class ArticleWithCommentResponse  {
     private String createdBy;
     private List<ArticleCommentResponse> comments;
 
-    public ArticleWithCommentResponse from(Article article, List<ArticleCommentResponse> commmentList) {
+    public static ArticleWithCommentResponse from(Article article, List<ArticleCommentResponse> commmentList) {
         return ArticleWithCommentResponse.builder()
                 .articleId(article.getArticleId())
                 .content(article.getContent())
