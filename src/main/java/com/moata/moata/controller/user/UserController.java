@@ -75,11 +75,20 @@ public class UserController {
     }
 
     @PostMapping("/user/like/{groupId}")
-    public ResponseEntity<HttpStatus> likeUser(Authentication authentication, @PathVariable("groupId") Long targetId){
+    public ResponseEntity<HttpStatus> saveLike(Authentication authentication, @PathVariable("groupId") Long targetId){
         Long likerId = Long.parseLong(authentication.getName());
 
-        userService.likePost(likerId, targetId);
+        userService.saveLike(likerId, targetId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/user/like/{groupId}")
+    public ResponseEntity<HttpStatus> deleteLike(Authentication authentication, @PathVariable("groupId") Long targetId){
+        Long likerId = Long.parseLong(authentication.getName());
+
+        userService.deleteLike(likerId, targetId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

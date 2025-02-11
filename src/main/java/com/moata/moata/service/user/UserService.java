@@ -54,7 +54,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void likePost(Long likerId, Long targetId) {
+    public void saveLike(Long likerId, Long targetId) {
         User liker = userRepository.findById(likerId)
                 .orElseThrow(() -> new EntityNotFoundException("Liker user not found"));
 
@@ -67,5 +67,20 @@ public class UserService {
 
         LikeUser likeUser = new LikeUser(liker, target);
         likeUserRepository.save(likeUser);
+    }
+
+    public void deleteLike(Long likerId, Long targetId) {
+        User liker = userRepository.findById(likerId)
+                .orElseThrow(() -> new EntityNotFoundException("Liker user not found"));
+
+        User target = userRepository.findById(targetId)
+                .orElseThrow(() -> new EntityNotFoundException("Target user not found"));
+
+        if (!likeUserRepository.existsByLikerAndTarget(liker, target)) {
+            throw new IllegalStateException("User has never liked this user");
+        }
+
+        LikeUser likeUser = new LikeUser(liker, target);
+        likeUserRepository.delete(likeUser);
     }
 }
