@@ -8,6 +8,7 @@ import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.user.LikeUser;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.group.GroupRepository;
+import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.user.LikeUserRepository;
 import com.moata.moata.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final LikeUserRepository likeUserRepository;
+    private final MatchingGroupRepository matchingGroupRepository;
 
     public User findById(Long userId) {
         return userRepository.findById(userId)
@@ -33,7 +35,8 @@ public class UserService {
     public UserProfileResponse findUserProfileByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return UserProfileResponse.from(user);
+        int sharedCarCnt = matchingGroupRepository.countByParticipantId(user);
+        return UserProfileResponse.from(user, sharedCarCnt);
     }
 
     @Transactional
@@ -105,7 +108,10 @@ public class UserService {
     }
 
     @Transactional
-    public void increaseSharedCarCnt(Long userId) {
-        userRepository.incrementSharedCarCnt(userId);
+    public int sharedCarCnt(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return matchingGroupRepository.countByParticipantId(user);
     }
 }

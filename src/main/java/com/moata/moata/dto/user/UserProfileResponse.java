@@ -11,10 +11,10 @@ public class UserProfileResponse {
     private String name;
     private int sharedCarCnt;
 
-    public static UserProfileResponse from(User user) {
+    public static UserProfileResponse from(User user, int sharedCarCnt) {
         return UserProfileResponse.builder()
                 .name(user.getName())
-                .sharedCarCnt(user.getSharedCarCnt())
+                .sharedCarCnt(sharedCarCnt)
                 .build();
     }
 }

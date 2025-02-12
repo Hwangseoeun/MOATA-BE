@@ -4,7 +4,6 @@ import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.group.*;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.service.group.GroupService;
-import com.moata.moata.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ public class GroupController {
 
     private final GroupService groupService;
     private final TokenProvider tokenProvider;
-    private final UserService userService;
 
     @PostMapping("/group")
     public ResponseEntity<GroupSaveResponse> saveGroup(@RequestHeader("Authorization") String authorizationHeader, @RequestBody GroupSaveRequest request) {
@@ -84,7 +82,6 @@ public class GroupController {
         try {
             groupService.addParticipantToMatchingGroup(groupId, userId);
             groupService.increaseMatchedCount(groupId);
-            userService.increaseSharedCarCnt(userId);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(GroupMatchingResponse.builder()

@@ -5,7 +5,6 @@ import com.moata.moata.dto.user.UserLocationRequest;
 import com.moata.moata.dto.user.UserNameUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -38,19 +37,19 @@ public class User {
     @Column(name = "longitude")
     private double longitude;
 
-    @Column(name = "shared_car_cnt", nullable = false)
+/*    @Column(name = "shared_car_cnt", nullable = false)
     @ColumnDefault("0")
-    private int sharedCarCnt;
+    private int sharedCarCnt;*/
 
     @Builder
-    public User(String name, String phone, UserTelcoType telco, String location, double latitude, double longitude, int sharedCarCnt) {
+    public User(String name, String phone, UserTelcoType telco, String location, double latitude, double longitude/*, int sharedCarCnt*/) {
         this.name = name;
         this.phone = phone;
         this.telco = telco;
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.sharedCarCnt = sharedCarCnt;
+/*        this.sharedCarCnt = sharedCarCnt;*/
     }
 
     public void saveUserLocation(UserLocationRequest userLocationSaveRequest) {
