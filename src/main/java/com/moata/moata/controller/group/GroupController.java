@@ -23,10 +23,14 @@ public class GroupController {
     private final UserService userService;
 
     @PostMapping("/group")
-    public ResponseEntity<GroupSaveResponse> saveGroup(@RequestBody GroupSaveRequest request) {
+    public ResponseEntity<GroupSaveResponse> saveGroup(@RequestHeader("Authorization") String authorizationHeader, @RequestBody GroupSaveRequest request) {
 //        log.info("group save request: {}", request);
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
+
         try {
-            Group group = groupService.saveGroup(request);
+            Group group = groupService.saveGroup(userId, request);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(GroupSaveResponse.builder()
                             .isSuccess(true)
@@ -58,9 +62,13 @@ public class GroupController {
         return ResponseEntity.ok().body(response);
     }
 
-    //추후 쿼리 파라미터를 통한 userId 값을 받는 것이 아닌 jwt를 통해 조회하는 방식으로 수정 예정
-    @GetMapping("/group/recommendations/{userId}")
-    public ResponseEntity<List<GroupDetailInfoResponse>> findMatchingGroups(@PathVariable Long userId) {
+    @GetMapping("/group/recommendations")
+    public ResponseEntity<List<GroupDetailInfoResponse>> findMatchingGroups(@RequestHeader("Authorization") String authorizationHeader) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
+
         List<GroupDetailInfoResponse> groups = groupService.getMatchingUsers(userId);
         return ResponseEntity.ok().body(groups);
     }

@@ -27,11 +27,11 @@ public class GroupService {
     private final MatchingGroupRepository matchingGroupRepository;
 
     @Transactional
-    public Group saveGroup(GroupSaveRequest request) {
+    public Group saveGroup(Long userId, GroupSaveRequest request) {
 
-        final User user = userRepository.findById(request.getOwnerId())
+        final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("User with id %d is not found", request.getOwnerId())));
+                        String.format("User with id %d is not found", userId)));
 
         Group group = groupRepository.save(request.toModel(user));
 
