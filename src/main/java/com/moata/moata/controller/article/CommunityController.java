@@ -59,7 +59,7 @@ public class CommunityController {
     }
 
     @PostMapping("rule")
-    public ResponseEntity<String> saveGroupRule(@AuthenticationPrincipal long userId,
+    public ResponseEntity<String> saveGroupRule(@RequestHeader("Authorization") String authorizationHeader,
                                                 @RequestBody GroupRuleSaveRequest groupRuleSaveRequest) {
         String token = authorizationHeader.replace("Bearer ", "");
         Long userId = tokenProvider.getUserId(token);
