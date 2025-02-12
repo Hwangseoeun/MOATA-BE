@@ -23,14 +23,20 @@ public class CommunityController {
     private final ArticleService articleService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ArticleResponse>> getArticleAll(@AuthenticationPrincipal long userId) {
+    public ResponseEntity<List<ArticleResponse>> getArticleAll(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         return ResponseEntity.ok().body(articleService.findAll(userId));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ArticleResponse>> searchArticle(@AuthenticationPrincipal long userId,
+    public ResponseEntity<List<ArticleResponse>> searchArticle(@RequestHeader("Authorization") String authorizationHeader,
                                                                @RequestParam(name = "keyword") String keyword,
                                                                @RequestParam(name = "userName") String userName) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         return ResponseEntity.ok().body(articleService.findByKeywordOrUserId(keyword, userId, userName));
     }
 
@@ -53,6 +59,9 @@ public class CommunityController {
     @PostMapping("rule")
     public ResponseEntity<String> saveGroupRule(@AuthenticationPrincipal long userId,
                                                 @RequestBody GroupRuleSaveRequest groupRuleSaveRequest) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         articleService.saveGroupRule(userId, groupRuleSaveRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -82,7 +91,11 @@ public class CommunityController {
     }
 
     @DeleteMapping("{article_id}/like")
-    public ResponseEntity<String> deleteLike(@PathVariable("article_id") long articleId, @AuthenticationPrincipal Long userId) {
+    public ResponseEntity<String> deleteLike(@RequestHeader("Authorization") String authorizationHeader,
+                                             @PathVariable("article_id") long articleId) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         articleService.deleteLike(articleId, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

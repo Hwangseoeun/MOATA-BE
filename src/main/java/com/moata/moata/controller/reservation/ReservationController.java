@@ -31,19 +31,29 @@ public class ReservationController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<ReservationResponse>> getMyReservations(@AuthenticationPrincipal long userId) {
+    public ResponseEntity<List<ReservationResponse>> getMyReservations(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         return ResponseEntity.ok().body(reservationService.findMy(userId));
     }
 
     @PostMapping
-    public ResponseEntity<String> createReservation(@AuthenticationPrincipal long userId,
+    public ResponseEntity<String> createReservation(@RequestHeader("Authorization") String authorizationHeader,
                                                     @RequestBody ReservationSaveRequest reservationSaveRequest) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         reservationService.saveReservation(userId, reservationSaveRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/ridesharing")
-    public ResponseEntity<String> createRidesharing(@AuthenticationPrincipal long userId, ReservationRideSharingRequest rideSharingRequest) {
+    public ResponseEntity<String> createRidesharing(@RequestHeader("Authorization") String authorizationHeader,
+                                                    @RequestBody ReservationRideSharingRequest rideSharingRequest) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         reservationService.saveRidesharing(userId, rideSharingRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
