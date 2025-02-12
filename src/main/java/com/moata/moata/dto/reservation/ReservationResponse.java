@@ -17,7 +17,7 @@ public class ReservationResponse {
     private String departure;
     private String destination;
 
-    public ReservationResponse from(Reservation reservation) {
+    public static ReservationResponse from(Reservation reservation) {
         return ReservationResponse.builder()
                 .reservationId(reservation.getReservationId())
                 .groupId(reservation.getGroupId().getGroupId())
