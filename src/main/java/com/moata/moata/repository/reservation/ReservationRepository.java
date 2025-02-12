@@ -13,8 +13,9 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     @Query("SELECT r FROM Reservation r WHERE " +
-            "r.startTime BETWEEN COALESCE(:from, r.startTime) AND COALESCE(:to, r.startTime) " +
-            "AND r.reserverId = COALESCE(:user, r.reserverId)")
+            "(COALESCE(:from, r.startTime) IS NULL OR r.startTime >= :from) " +
+            "AND (COALESCE(:to, r.startTime) IS NULL OR r.startTime <= :to) " +
+            "AND (:user IS NULL OR r.reserverId = :user)")
     List<Reservation> searchReservations(
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to,
