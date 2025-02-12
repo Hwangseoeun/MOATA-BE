@@ -6,6 +6,8 @@ import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -23,10 +25,12 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Group groupId;
 
     @ManyToOne
     @JoinColumn(name = "reserver_id", nullable = false)
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private User reserverId;
 
     @Column(name = "start_time", nullable = false)

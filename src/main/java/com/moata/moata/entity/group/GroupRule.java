@@ -2,6 +2,8 @@ package com.moata.moata.entity.group;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -17,6 +19,7 @@ public class GroupRule {
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Group groupId;
 
     @Column(name = "washing_frequency", nullable = false, length = 30)

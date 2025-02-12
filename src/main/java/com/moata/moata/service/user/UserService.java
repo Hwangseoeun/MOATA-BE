@@ -37,6 +37,7 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
+    @Transactional
     public void saveUserLocation(Long userId, UserLocationSaveRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -60,10 +61,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         userRepository.delete(user);
+        userRepository.flush();
     }
 
     public void saveLike(Long likerId, Long targetId) {

@@ -2,6 +2,8 @@ package com.moata.moata.entity.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -16,11 +18,13 @@ public class LikeUser {
     @ManyToOne
     @MapsId("likerId")  // LikeUserId의 likerId 필드와 매핑
     @JoinColumn(name = "liker_id", nullable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private User liker;
 
     @ManyToOne
     @MapsId("targetId")  // LikeUserId의 targetId 필드와 매핑
     @JoinColumn(name = "target_id", nullable = false)
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private User target;
 
     @Builder
