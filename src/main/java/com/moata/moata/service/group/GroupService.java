@@ -5,8 +5,10 @@ import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.group.GroupSaveRequest;
 import com.moata.moata.dto.group.GroupSearchCondition;
 import com.moata.moata.entity.group.Group;
+import com.moata.moata.entity.group.MatchingGroup;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.group.GroupRepository;
+import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +24,25 @@ public class GroupService {
 
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
+    private final MatchingGroupRepository matchingGroupRepository;
 
     @Transactional
     public Group saveGroup(GroupSaveRequest request) {
+
         final User user = userRepository.findById(request.getOwnerId())
-                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id is not found", request.getOwnerId())));
-        return groupRepository.save(request.toModel(user));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("User with id %d is not found", request.getOwnerId())));
+
+        Group group = groupRepository.save(request.toModel(user));
+
+        MatchingGroup matchingGroup = MatchingGroup.builder()
+                .groupId(group)
+                .participantId(user)
+                .build();
+
+        matchingGroupRepository.save(matchingGroup);
+
+        return group;
     }
 
     public List<GroupInfoResponse> findAllGroups() {
@@ -71,5 +86,22 @@ public class GroupService {
     @Transactional
     public void increaseMatchedCount(Long groupId) {
         groupRepository.incrementMatchedCount(groupId);
+    }
+
+    @Transactional
+    public void addParticipantToMatchingGroup(Long groupId, Long userId) {
+
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found for Group ID: " + groupId));
+
+        MatchingGroup matchingGroup = matchingGroupRepository.findByGroupId(group)
+                .orElseThrow(() -> new EntityNotFoundException("MatchingGroup not found for Group ID: " + groupId));
+
+        User participant = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found for User ID: " + userId));
+
+        MatchingGroup updatedMatchingGroup = matchingGroup.withParticipant(participant);
+
+        matchingGroupRepository.save(updatedMatchingGroup);
     }
 }

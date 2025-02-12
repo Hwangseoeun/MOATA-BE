@@ -112,4 +112,9 @@ public class UserService {
                 .map(like -> GroupInfoResponse.from(group))
                 .toList();
     }
+
+    @Transactional
+    public void increaseSharedCarCnt(Long userId) {
+        userRepository.incrementSharedCarCnt(userId);
+    }
 }
