@@ -8,7 +8,6 @@ import com.moata.moata.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,9 +33,11 @@ public class UserController {
     }
 
     @GetMapping("/user/my")
-    public ResponseEntity<UserProfileResponse> findUserProfile(Authentication authentication){
+    public ResponseEntity<UserProfileResponse> findUserProfile(@RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = Long.parseLong(authentication.getName());
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
 
         UserProfileResponse response = userService.findUserProfileByUserId(userId);
         return ResponseEntity.ok().body(response);
@@ -76,17 +77,22 @@ public class UserController {
     }
 
     @DeleteMapping("/user/my")
-    public ResponseEntity<HttpStatus> deleteUserById(Authentication authentication){
+    public ResponseEntity<HttpStatus> deleteUserById(@RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = Long.parseLong(authentication.getName());
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
 
         userService.deleteUser(userId);
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/user/like/{groupId}")
-    public ResponseEntity<HttpStatus> saveLike(Authentication authentication, @PathVariable("groupId") Long targetId){
-        Long likerId = Long.parseLong(authentication.getName());
+    public ResponseEntity<HttpStatus> saveLike(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("groupId") Long targetId){
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long likerId = tokenProvider.getUserId(token);
 
         userService.saveLike(likerId, targetId);
 
@@ -94,8 +100,11 @@ public class UserController {
     }
 
     @DeleteMapping("/user/like/{groupId}")
-    public ResponseEntity<HttpStatus> deleteLike(Authentication authentication, @PathVariable("groupId") Long targetId){
-        Long likerId = Long.parseLong(authentication.getName());
+    public ResponseEntity<HttpStatus> deleteLike(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("groupId") Long targetId){
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long likerId = tokenProvider.getUserId(token);
 
         userService.deleteLike(likerId, targetId);
 
@@ -103,9 +112,14 @@ public class UserController {
     }
 
     @GetMapping("/user/like")
-    public ResponseEntity<List<GroupInfoResponse>> getLikedUsers(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
+    public ResponseEntity<List<GroupInfoResponse>> getLikedUsers(@RequestHeader("Authorization") String authorizationHeader) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
+
         List<GroupInfoResponse> likedUsers = userService.getLikedUsers(userId);
+
         return ResponseEntity.ok().body(likedUsers);
     }
 }
