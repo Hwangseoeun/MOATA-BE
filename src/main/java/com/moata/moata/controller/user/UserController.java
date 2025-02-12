@@ -1,5 +1,6 @@
 package com.moata.moata.controller.user;
 
+import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.user.*;
 import com.moata.moata.service.user.KakaoService;
@@ -20,6 +21,7 @@ public class UserController {
 
     private final KakaoService kakaoService;
     private final UserService userService;
+    private final TokenProvider tokenProvider;
 
     @ResponseBody
     @GetMapping("/auth/kakao/callback")
@@ -41,18 +43,22 @@ public class UserController {
     }
 
     @PostMapping("/user/my/location")
-    public ResponseEntity<HttpStatus> saveUserLocation(Authentication authentication, @RequestBody UserLocationSaveRequest request){
+    public ResponseEntity<HttpStatus> saveUserLocation(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserLocationSaveRequest request){
 
-        Long userId = Long.parseLong(authentication.getName());
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
 
         userService.saveUserLocation(userId, request);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @PutMapping("/user/my/name")
-    public ResponseEntity<HttpStatus> updateUserName(Authentication authentication, @RequestBody UserNameUpdateRequest request){
+    public ResponseEntity<HttpStatus> updateUserName(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserNameUpdateRequest request){
 
-        Long userId = Long.parseLong(authentication.getName());
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
 
         userService.updateUserName(userId, request);
         return ResponseEntity.ok(HttpStatus.CREATED);

@@ -14,6 +14,7 @@ import com.moata.moata.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,22 +37,24 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
-    public User saveUserLocation(Long userId, UserLocationSaveRequest request) {
+    public void saveUserLocation(Long userId, UserLocationSaveRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return userRepository.save(request.toModel());
+        userRepository.save(request.toModel());
     }
 
-    public User updateUserName(Long userId, UserNameUpdateRequest request) {
+    @Transactional
+    public void updateUserName(Long userId, UserNameUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return userRepository.save(request.toModel());
+        user.updateUserName(request);
+        userRepository.save(user);
     }
 
-    public User updateUserLocation(Long userId, UserLocationUpdateRequest request) {
+    public void updateUserLocation(Long userId, UserLocationUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return userRepository.save(request.toModel());
+        user.updateUserLocation(request);
     }
 
     public void deleteUser(Long userId) {

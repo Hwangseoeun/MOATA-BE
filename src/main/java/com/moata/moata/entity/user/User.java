@@ -1,6 +1,8 @@
 package com.moata.moata.entity.user;
 
 import com.moata.moata.constant.UserTelcoType;
+import com.moata.moata.dto.user.UserLocationUpdateRequest;
+import com.moata.moata.dto.user.UserNameUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -49,5 +51,13 @@ public class User {
         this.latitude = latitude;
         this.longitude = longitude;
         this.sharedCarCnt = sharedCarCnt;
+    }
+
+    public void updateUserName(UserNameUpdateRequest userNameUpdateRequest) {
+        this.name = userNameUpdateRequest.getName();
+    }
+
+    public void updateUserLocation(UserLocationUpdateRequest userLocationUpdateRequest) {
+        this.location = userLocationUpdateRequest.getLocation();
     }
 }
