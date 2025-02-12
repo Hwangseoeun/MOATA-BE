@@ -65,9 +65,11 @@ public class UserController {
     }
 
     @PutMapping("/user/my/location")
-    public ResponseEntity<HttpStatus> updateUserLocation(Authentication authentication, @RequestBody UserLocationUpdateRequest request){
+    public ResponseEntity<HttpStatus> updateUserLocation(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserLocationUpdateRequest request){
 
-        Long userId = Long.parseLong(authentication.getName());
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
 
         userService.updateUserLocation(userId, request);
         return ResponseEntity.ok(HttpStatus.CREATED);

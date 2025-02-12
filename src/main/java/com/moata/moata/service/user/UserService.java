@@ -55,6 +55,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         user.updateUserLocation(request);
+        userRepository.save(user);
     }
 
     public void deleteUser(Long userId) {

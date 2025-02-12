@@ -59,5 +59,7 @@ public class User {
 
     public void updateUserLocation(UserLocationUpdateRequest userLocationUpdateRequest) {
         this.location = userLocationUpdateRequest.getLocation();
+        this.latitude = userLocationUpdateRequest.getLatitude();
+        this.longitude = userLocationUpdateRequest.getLongitude();
     }
 }
