@@ -48,7 +48,7 @@ public class ArticleService {
         return articles.stream().map(article -> {
             int commentCount = articleCommentRepository.countByArticleIdAndCommentBool(article, true);
             int likeCount = articleCommentRepository.countByArticleIdAndCommentBool(article, false);
-            boolean liked = articleCommentRepository.existsByArticleIdAndCreatedByAndComment(article, userName, false);
+            boolean liked = articleCommentRepository.existsByArticleIdAndCreatedByAndCommentBool(article, userName, false);
             return ArticleResponse.from(article, commentCount, likeCount, liked);
         }).toList();
     }
@@ -56,7 +56,7 @@ public class ArticleService {
     public ArticleWithCommentResponse findByIdWithComment(Long id) {
         Article article = articleRepository.findByArticleId(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글"));
-        List<ArticleCommentResponse> comments = articleCommentRepository.findByArticleIdAndComment(article, true).stream().map(ArticleCommentResponse::from).toList();
+        List<ArticleCommentResponse> comments = articleCommentRepository.findByArticleIdAndCommentBool(article, true).stream().map(ArticleCommentResponse::from).toList();
         return ArticleWithCommentResponse.from(article, comments);
     }
 
@@ -86,7 +86,7 @@ public class ArticleService {
                 .articleId(article)
                 .createdAt(LocalDateTime.now())
                 .createdBy(userName)
-                .isComment(false)
+                .commentBool(false)
                 .build();
 
         articleCommentRepository.save(like);

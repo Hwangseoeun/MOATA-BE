@@ -1,6 +1,8 @@
 package com.moata.moata.entity.user;
 
 import com.moata.moata.constant.UserTelcoType;
+import com.moata.moata.dto.user.UserLocationRequest;
+import com.moata.moata.dto.user.UserNameUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,11 +31,40 @@ public class User {
     @Column(name = "location")
     private String location;
 
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
+/*    @Column(name = "shared_car_cnt", nullable = false)
+    @ColumnDefault("0")
+    private int sharedCarCnt;*/
+
     @Builder
-    public User(String name, String phone, UserTelcoType telco, String location) {
+    public User(String name, String phone, UserTelcoType telco, String location, double latitude, double longitude/*, int sharedCarCnt*/) {
         this.name = name;
         this.phone = phone;
         this.telco = telco;
         this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
+/*        this.sharedCarCnt = sharedCarCnt;*/
+    }
+
+    public void saveUserLocation(UserLocationRequest userLocationSaveRequest) {
+        this.location = userLocationSaveRequest.getLocation();
+        this.latitude = userLocationSaveRequest.getLatitude();
+        this.longitude = userLocationSaveRequest.getLongitude();
+    }
+
+    public void updateUserName(UserNameUpdateRequest userNameUpdateRequest) {
+        this.name = userNameUpdateRequest.getName();
+    }
+
+    public void updateUserLocation(UserLocationRequest userLocationUpdateRequest) {
+        this.location = userLocationUpdateRequest.getLocation();
+        this.latitude = userLocationUpdateRequest.getLatitude();
+        this.longitude = userLocationUpdateRequest.getLongitude();
     }
 }

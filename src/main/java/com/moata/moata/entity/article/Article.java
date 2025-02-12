@@ -3,6 +3,8 @@ package com.moata.moata.entity.article;
 import com.moata.moata.entity.group.Group;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +22,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Group groupId;
 
     @Column(name = "content", length = 10000)

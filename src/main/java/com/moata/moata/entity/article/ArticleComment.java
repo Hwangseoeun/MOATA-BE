@@ -2,6 +2,8 @@ package com.moata.moata.entity.article;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +21,7 @@ public class ArticleComment {
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Article articleId;
 
     @Column(name = "content", length = 10000)
@@ -34,11 +37,11 @@ public class ArticleComment {
     private boolean commentBool;
 
     @Builder
-    public ArticleComment(Article articleId, String content, LocalDateTime createdAt, String createdBy, Boolean isComment) {
+    public ArticleComment(Article articleId, String content, LocalDateTime createdAt, String createdBy, Boolean commentBool) {
         this.articleId = articleId;
         this.content = content;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
-        this.commentBool = isComment;
+        this.commentBool = commentBool;
     }
 }

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -21,6 +23,7 @@ public class Group {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private User ownerId;
 
     @Column(name = "has_car", nullable = false)
