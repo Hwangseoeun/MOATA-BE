@@ -50,7 +50,7 @@ public class UserController {
 
         Long userId = tokenProvider.getUserId(token);
 
-        userService.saveUserLocation(userId, request);
+        userService.updateUserLocation(userId, request);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

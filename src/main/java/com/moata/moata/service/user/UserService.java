@@ -37,14 +37,6 @@ public class UserService {
     }
 
     @Transactional
-    public void saveUserLocation(Long userId, UserLocationRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        user.saveUserLocation(request);
-        userRepository.save(user);
-    }
-
-    @Transactional
     public void updateUserName(Long userId, UserNameUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
