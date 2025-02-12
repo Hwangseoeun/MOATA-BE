@@ -14,11 +14,10 @@ public class GroupDetailInfoResponse {
     private int coOwnerMax;
     private int matchedCount;
 
-    //추후 User 추가해야 함(user_id를 통해 ownerName, ownerLocation 조회)
     public static GroupDetailInfoResponse from(Group group) {
         return GroupDetailInfoResponse.builder()
-                .ownerName(null)
-                .ownerLocation(null)
+                .ownerName(group.getOwnerId().getName())
+                .ownerLocation(group.getOwnerId().getLocation())
                 .carModelName(group.getCarModelName())
                 .coOwnerMax(group.getCoOwnerMax())
                 .matchedCount(group.getMatchedCount())
