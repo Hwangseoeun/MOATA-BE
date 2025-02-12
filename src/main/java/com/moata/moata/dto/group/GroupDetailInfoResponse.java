@@ -13,14 +13,16 @@ public class GroupDetailInfoResponse {
     private String carModelName;
     private int coOwnerMax;
     private int matchedCount;
+    private double distance;
 
-    public static GroupDetailInfoResponse from(Group group) {
+    public static GroupDetailInfoResponse from(Group group, double distance) {
         return GroupDetailInfoResponse.builder()
                 .ownerName(group.getOwnerId().getName())
                 .ownerLocation(group.getOwnerId().getLocation())
                 .carModelName(group.getCarModelName())
                 .coOwnerMax(group.getCoOwnerMax())
                 .matchedCount(group.getMatchedCount())
+                .distance(distance)
                 .build();
     }
 }

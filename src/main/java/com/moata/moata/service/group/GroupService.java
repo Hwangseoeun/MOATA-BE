@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.moata.moata.common.DistanceCalculator.calculateDistance;
+
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
@@ -36,41 +38,75 @@ public class GroupService {
         return groupRepository.save(request.toModel(user));
     }
 
-    public List<GroupInfoResponse> findAllGroups() {
+    @Transactional(readOnly = true)
+    public List<GroupInfoResponse> findAllGroups(Long userId) {
+
+        User currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
         return groupRepository.findAll().stream()
-                .map(GroupInfoResponse::from)
+                .map(group -> {
+                    User owner = group.getOwnerId();
+
+                    double distance = calculateDistance(currentUser.getLatitude(), currentUser.getLongitude(), owner.getLatitude(), owner.getLongitude());
+
+                    return GroupInfoResponse.from(group, distance);
+                })
                 .toList();
     }
 
-    public List<GroupInfoResponse> searchGroups(GroupSearchCondition condition) {
+    @Transactional(readOnly = true)
+    public List<GroupInfoResponse> searchGroups(GroupSearchCondition condition, Long userId) {
+
+        User currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
         return groupRepository.searchGroups(condition).stream()
-                .map(GroupInfoResponse::from)
+                .map(group -> {
+                    User owner = group.getOwnerId();
+
+                    double distance = calculateDistance(currentUser.getLatitude(), currentUser.getLongitude(), owner.getLatitude(), owner.getLongitude());
+
+                    return GroupInfoResponse.from(group, distance);
+                })
                 .toList();
     }
 
-    public GroupDetailInfoResponse findGroupByGroupId(Long groupId) {
+    @Transactional(readOnly = true)
+    public GroupDetailInfoResponse findGroupByGroupId(Long groupId, Long currentUserId) {
         Group group = groupRepository.findByGroupId(groupId)
                 .orElseThrow(() -> new EntityNotFoundException("Group not found"));
-        return GroupDetailInfoResponse.from(group);
+
+        User owner = group.getOwnerId();
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        double distance = calculateDistance(currentUser.getLatitude(), currentUser.getLongitude(), owner.getLatitude(), owner.getLongitude());
+
+        return GroupDetailInfoResponse.from(group, distance);
     }
 
     public List<GroupDetailInfoResponse> getMatchingUsers(Long userId) {
-        final User user = userRepository.findById(userId)
+        final User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id is not found", userId)));
 
-        Group group = groupRepository.findByOwnerId(user)
+        Group userGroup = groupRepository.findByOwnerId(currentUser)
                 .orElseThrow(() -> new EntityNotFoundException("Group not found for User ID: " + userId));
 
         List<Group> matchedGroups = groupRepository.findBestMatches(
-                group.getHasCar(),
-                group.getCarType(),
-                group.getCarModelName(),
-                group.getCoOwnerMax(),
-                group.getCarUseFrequency()
+                userGroup.getHasCar(),
+                userGroup.getCarType(),
+                userGroup.getCarModelName(),
+                userGroup.getCoOwnerMax(),
+                userGroup.getCarUseFrequency()
         );
 
         return matchedGroups.stream()
-                .map(GroupDetailInfoResponse::from)
+                .map(group -> {
+                    User owner = group.getOwnerId();
+                    double distance = calculateDistance(currentUser.getLatitude(), currentUser.getLongitude(), owner.getLatitude(), owner.getLongitude());
+                    return GroupDetailInfoResponse.from(group, distance);
+                })
                 .toList();
     }
 

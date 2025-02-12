@@ -14,8 +14,9 @@ public class GroupInfoResponse {
     private String carModelName;
     private int coOwnerMax;
     private int matchedCount;
+    private double distance;
 
-    public static GroupInfoResponse from(Group group) {
+    public static GroupInfoResponse from(Group group, double distance) {
         return GroupInfoResponse.builder()
                 .groupId(group.getGroupId())
                 .ownerName(group.getOwnerId().getName())
@@ -23,6 +24,7 @@ public class GroupInfoResponse {
                 .carModelName(group.getCarModelName())
                 .coOwnerMax(group.getCoOwnerMax())
                 .matchedCount(group.getMatchedCount())
+                .distance(distance)
                 .build();
     }
 }
