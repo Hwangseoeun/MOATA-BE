@@ -33,16 +33,7 @@ public class GroupService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("User with id %d is not found", userId)));
 
-        Group group = groupRepository.save(request.toModel(user));
-
-        MatchingGroup matchingGroup = MatchingGroup.builder()
-                .groupId(group)
-                .participantId(user)
-                .build();
-
-        matchingGroupRepository.save(matchingGroup);
-
-        return group;
+        return groupRepository.save(request.toModel(user));
     }
 
     public List<GroupInfoResponse> findAllGroups() {
@@ -94,14 +85,14 @@ public class GroupService {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new EntityNotFoundException("Group not found for Group ID: " + groupId));
 
-        MatchingGroup matchingGroup = matchingGroupRepository.findByGroupId(group)
-                .orElseThrow(() -> new EntityNotFoundException("MatchingGroup not found for Group ID: " + groupId));
-
         User participant = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found for User ID: " + userId));
 
-        MatchingGroup updatedMatchingGroup = matchingGroup.withParticipant(participant);
+        MatchingGroup matchingGroup = MatchingGroup.builder()
+                .groupId(group)
+                .participantId(participant)
+                .build();
 
-        matchingGroupRepository.save(updatedMatchingGroup);
+        matchingGroupRepository.save(matchingGroup);
     }
 }

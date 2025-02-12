@@ -33,11 +33,4 @@ public class MatchingGroup {
         this.groupId = groupId;
         this.participantId = participantId;
     }
-
-    public MatchingGroup withParticipant(User participant) {
-        return MatchingGroup.builder()
-                .groupId(this.groupId)  // 기존 그룹 ID 유지
-                .participantId(participant)  // 새로운 참가자 설정
-                .build();
-    }
 }

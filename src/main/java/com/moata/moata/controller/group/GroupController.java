@@ -31,6 +31,7 @@ public class GroupController {
 
         try {
             Group group = groupService.saveGroup(userId, request);
+            groupService.addParticipantToMatchingGroup(group.getGroupId(), userId);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(GroupSaveResponse.builder()
                             .isSuccess(true)
