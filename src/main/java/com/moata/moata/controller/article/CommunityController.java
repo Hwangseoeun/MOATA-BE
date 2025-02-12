@@ -1,5 +1,6 @@
 package com.moata.moata.controller.article;
 
+import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.article.ArticleCommentSaveRequest;
 import com.moata.moata.dto.article.ArticleResponse;
 import com.moata.moata.dto.article.ArticleSaveRequest;
@@ -21,6 +22,7 @@ import java.util.List;
 public class CommunityController {
 
     private final ArticleService articleService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/all")
     public ResponseEntity<List<ArticleResponse>> getArticleAll(@RequestHeader("Authorization") String authorizationHeader) {

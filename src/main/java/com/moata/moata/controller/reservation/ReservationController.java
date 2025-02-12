@@ -1,5 +1,6 @@
 package com.moata.moata.controller.reservation;
 
+import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.reservation.ReservationResponse;
 import com.moata.moata.dto.reservation.ReservationRideSharingRequest;
 import com.moata.moata.dto.reservation.ReservationSaveRequest;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/all")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
