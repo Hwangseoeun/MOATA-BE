@@ -1,8 +1,7 @@
 package com.moata.moata.entity.user;
 
 import com.moata.moata.constant.UserTelcoType;
-import com.moata.moata.dto.user.UserLocationSaveRequest;
-import com.moata.moata.dto.user.UserLocationUpdateRequest;
+import com.moata.moata.dto.user.UserLocationRequest;
 import com.moata.moata.dto.user.UserNameUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -54,7 +53,7 @@ public class User {
         this.sharedCarCnt = sharedCarCnt;
     }
 
-    public void saveUserLocation(UserLocationSaveRequest userLocationSaveRequest) {
+    public void saveUserLocation(UserLocationRequest userLocationSaveRequest) {
         this.location = userLocationSaveRequest.getLocation();
         this.latitude = userLocationSaveRequest.getLatitude();
         this.longitude = userLocationSaveRequest.getLongitude();
@@ -64,7 +63,7 @@ public class User {
         this.name = userNameUpdateRequest.getName();
     }
 
-    public void updateUserLocation(UserLocationUpdateRequest userLocationUpdateRequest) {
+    public void updateUserLocation(UserLocationRequest userLocationUpdateRequest) {
         this.location = userLocationUpdateRequest.getLocation();
         this.latitude = userLocationUpdateRequest.getLatitude();
         this.longitude = userLocationUpdateRequest.getLongitude();

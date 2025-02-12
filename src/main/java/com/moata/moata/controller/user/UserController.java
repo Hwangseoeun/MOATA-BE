@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/user/my/location")
-    public ResponseEntity<HttpStatus> saveUserLocation(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserLocationSaveRequest request){
+    public ResponseEntity<HttpStatus> saveUserLocation(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserLocationRequest request){
 
         String token = authorizationHeader.replace("Bearer ", "");
 
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PutMapping("/user/my/location")
-    public ResponseEntity<HttpStatus> updateUserLocation(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserLocationUpdateRequest request){
+    public ResponseEntity<HttpStatus> updateUserLocation(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserLocationRequest request){
 
         String token = authorizationHeader.replace("Bearer ", "");
 
