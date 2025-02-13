@@ -4,9 +4,11 @@ import com.moata.moata.dto.reservation.ReservationResponse;
 import com.moata.moata.dto.reservation.ReservationRideSharingRequest;
 import com.moata.moata.dto.reservation.ReservationSaveRequest;
 import com.moata.moata.entity.group.Group;
+import com.moata.moata.entity.group.MatchingGroup;
 import com.moata.moata.entity.reservation.Reservation;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.group.GroupRepository;
+import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.reservation.ReservationRepository;
 import com.moata.moata.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +27,20 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final MatchingGroupRepository matchingGroupRepository;
+
+    public List<Group> findMatchingGroup(long userId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        return matchingGroupRepository.findByParticipantId(user).stream().map(MatchingGroup::getGroupId).collect(Collectors.toList());
+    }
 
     //matching_group 적용 이후 추가 수정
-    public List<ReservationResponse> findAll() {
-        List<Reservation> reservations = reservationRepository.findAll();
+    public List<ReservationResponse> findAll(long userId) {
+        List<Reservation> reservations = reservationRepository.findByGroupIdIn(findMatchingGroup(userId));
         return reservations.stream().map(ReservationResponse::from).toList();
     }
 
-    public List<ReservationResponse> searchReservation(String startDate, String endDate, long userId) {
+    public List<ReservationResponse> searchReservation(long myId, String startDate, String endDate, long userId) {
 
         LocalDateTime from = Optional.ofNullable(startDate)
                 .map(s -> LocalDateTime.parse(s, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -43,7 +52,7 @@ public class ReservationService {
         User user = userRepository.findById(userId)
                 .orElse(null);
 
-        return reservationRepository.searchReservations(from, to, user).stream().map(ReservationResponse::from).toList();
+        return reservationRepository.searchReservations(from, to, user, findMatchingGroup(myId)).stream().map(ReservationResponse::from).toList();
     }
 
     public List<ReservationResponse> findMy(long userId) {

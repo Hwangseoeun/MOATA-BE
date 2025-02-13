@@ -7,11 +7,13 @@ import com.moata.moata.entity.article.Article;
 import com.moata.moata.entity.article.ArticleComment;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.group.GroupRule;
+import com.moata.moata.entity.group.MatchingGroup;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.article.ArticleCommentRepository;
 import com.moata.moata.repository.article.ArticleRepository;
 import com.moata.moata.repository.group.GroupRepository;
 import com.moata.moata.repository.group.GroupRuleRepository;
+import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -29,14 +32,20 @@ public class ArticleService {
     private final GroupRepository groupRepository;
     private final GroupRuleRepository groupRuleRepository;
     private final UserRepository userRepository;
+    private final MatchingGroupRepository matchingGroupRepository;
+
+    public List<Group> findMatchingGroup(long userId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        return matchingGroupRepository.findByParticipantId(user).stream().map(MatchingGroup::getGroupId).collect(Collectors.toList());
+    }
 
     public List<ArticleResponse> findAll(long userId) {
-        List<Article> articles = articleRepository.findAll();
+        List<Article> articles = articleRepository.findByGroupIdIn(findMatchingGroup(userId));
         return entityToResponse(articles, userId);
     }
 
     public List<ArticleResponse> findByKeywordOrUserId(String keyword, long userId, String userName) {
-        List<Article> articles = articleRepository.findByContentContainingOrCreatedBy(keyword, userName);
+        List<Article> articles = articleRepository.findByContentContainingOrCreatedByAndGroupIdIn(keyword, userName, findMatchingGroup(userId));
         return entityToResponse(articles, userId);
     }
 
@@ -60,8 +69,8 @@ public class ArticleService {
         return ArticleWithCommentResponse.from(article, comments);
     }
 
-    public GroupRuleResponse findGroupRule() {
-        List<GroupRule> groupRules = groupRuleRepository.findAll();
+    public GroupRuleResponse findGroupRule(long userId) {
+        List<GroupRule> groupRules = groupRuleRepository.findByGroupIdIn(findMatchingGroup(userId));
         return GroupRuleResponse.from(groupRules.get(0));
     }
 

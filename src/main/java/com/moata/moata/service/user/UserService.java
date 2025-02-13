@@ -1,9 +1,8 @@
 package com.moata.moata.service.user;
 
+import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.group.GroupInfoResponse;
-import com.moata.moata.dto.user.UserLocationRequest;
-import com.moata.moata.dto.user.UserNameUpdateRequest;
-import com.moata.moata.dto.user.UserProfileResponse;
+import com.moata.moata.dto.user.*;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.user.LikeUser;
 import com.moata.moata.entity.user.User;
@@ -19,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.moata.moata.common.DistanceCalculator.calculateDistance;
 
@@ -31,8 +32,31 @@ public class UserService {
     private final GroupRepository groupRepository;
     private final LikeUserRepository likeUserRepository;
     private final MatchingGroupRepository matchingGroupRepository;
+    private final TokenProvider tokenProvider;
 
-    private final GroupService groupService;
+    public AuthTokens signUp(UserSignUpRequest userSignUpRequest) {
+
+        Optional<User> existingUser = userRepository.findByPhone(userSignUpRequest.getPhone());
+
+        User user;
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+        } else {
+            user = userSignUpRequest.toModel();
+
+            userRepository.save(user);
+        }
+
+        // Access Token (1시간 유효)
+        String accessToken = tokenProvider.makeToken(new Date(System.currentTimeMillis() + 36000* 1000L), user);
+        // Refresh Token (7일 유효)
+        String refreshToken = tokenProvider.makeToken(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L), user);
+
+        return AuthTokens.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
 
     public User findById(Long userId) {
         return userRepository.findById(userId)

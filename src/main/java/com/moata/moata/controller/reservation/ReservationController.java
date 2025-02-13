@@ -8,7 +8,6 @@ import com.moata.moata.service.reservation.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,15 +20,22 @@ public class ReservationController {
     private final TokenProvider tokenProvider;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ReservationResponse>> getAllReservations() {
-        return ResponseEntity.ok().body(reservationService.findAll());
+    public ResponseEntity<List<ReservationResponse>> getAllReservations(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
+        return ResponseEntity.ok().body(reservationService.findAll(userId));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ReservationResponse>> searchReservation(@RequestParam(name = "startDate", required = false) String startDate,
-                                               @RequestParam(name = "endDate", required = false) String endDate,
-                                               @RequestParam(name = "userId", required = false, defaultValue = "-1") Long userId) {
-        return ResponseEntity.ok().body(reservationService.searchReservation(startDate, endDate, userId));
+    public ResponseEntity<List<ReservationResponse>> searchReservation(@RequestHeader("Authorization") String authorizationHeader,
+                                                                       @RequestParam(name = "startDate", required = false) String startDate,
+                                                                       @RequestParam(name = "endDate", required = false) String endDate,
+                                                                       @RequestParam(name = "userId", required = false, defaultValue = "-1") Long userId) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long myId = tokenProvider.getUserId(token);
+
+        return ResponseEntity.ok().body(reservationService.searchReservation(myId, startDate, endDate, userId));
     }
 
     @GetMapping("/my")

@@ -48,8 +48,11 @@ public class CommunityController {
     }
 
     @GetMapping("rule")
-    public ResponseEntity<GroupRuleResponse> getGroupRule() {
-        return ResponseEntity.ok().body(articleService.findGroupRule());
+    public ResponseEntity<GroupRuleResponse> getGroupRule(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
+        return ResponseEntity.ok().body(articleService.findGroupRule(userId));
     }
 
     @PostMapping

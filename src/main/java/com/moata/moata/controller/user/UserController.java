@@ -32,6 +32,11 @@ public class UserController {
         }
     }
 
+    @PostMapping("/auth/signup")
+    public ResponseEntity<AuthTokens> signUp(@RequestBody UserSignUpRequest userSignUpRequest){
+        return ResponseEntity.ok(userService.signUp(userSignUpRequest));
+    }
+
     @GetMapping("/user/my")
     public ResponseEntity<UserProfileResponse> findUserProfile(@RequestHeader("Authorization") String authorizationHeader){
 
