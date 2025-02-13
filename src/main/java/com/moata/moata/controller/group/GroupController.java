@@ -65,6 +65,12 @@ public class GroupController {
         return ResponseEntity.ok().body(groupService.searchGroups(condition, userId));
     }
 
+    @GetMapping("/group/search/keyword")
+    public ResponseEntity<List<Group>> searchGroupsByUser(@ModelAttribute GroupSearchByUserCondition condition) {
+        List<Group> groups = groupService.searchGroupsByUser(condition);
+        return ResponseEntity.ok(groups);
+    }
+
     @GetMapping("/group/{groupId}")
     public ResponseEntity<GroupDetailInfoResponse> detailGroupInfo(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("groupId") Long groupId) {
 

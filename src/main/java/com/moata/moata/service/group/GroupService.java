@@ -1,12 +1,10 @@
 package com.moata.moata.service.group;
 
-import com.moata.moata.dto.group.GroupDetailInfoResponse;
-import com.moata.moata.dto.group.GroupInfoResponse;
-import com.moata.moata.dto.group.GroupSaveRequest;
-import com.moata.moata.dto.group.GroupSearchCondition;
+import com.moata.moata.dto.group.*;
 import com.moata.moata.entity.group.Group;
 import com.moata.moata.entity.group.MatchingGroup;
 import com.moata.moata.entity.user.User;
+import com.moata.moata.repository.group.GroupCustomUserRepository;
 import com.moata.moata.repository.group.GroupRepository;
 import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.user.UserRepository;
@@ -27,6 +25,7 @@ public class GroupService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final MatchingGroupRepository matchingGroupRepository;
+    private final GroupCustomUserRepository groupCustomUserRepository;
 
     @Transactional
     public Group saveGroup(Long userId, GroupSaveRequest request) {
@@ -70,6 +69,10 @@ public class GroupService {
                     return GroupInfoResponse.from(group, distance);
                 })
                 .toList();
+    }
+
+    public List<Group> searchGroupsByUser(GroupSearchByUserCondition condition) {
+        return groupCustomUserRepository.searchGroupsByUser(condition);
     }
 
     @Transactional(readOnly = true)
