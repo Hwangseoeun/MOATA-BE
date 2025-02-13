@@ -10,6 +10,7 @@ public class ReservationResponse {
     private long reservationId;
     private long groupId;
     private long reserverId;
+    private String name;
     private String startTime;
     private String endTime;
     private Boolean isRideSharing;
@@ -17,11 +18,12 @@ public class ReservationResponse {
     private String departure;
     private String destination;
 
-    public static ReservationResponse from(Reservation reservation) {
+    public static ReservationResponse from(Reservation reservation, String name) {
         return ReservationResponse.builder()
                 .reservationId(reservation.getReservationId())
                 .groupId(reservation.getGroupId().getGroupId())
                 .reserverId(reservation.getReserverId().getUserId())
+                .name(name)
                 .startTime(reservation.getStartTime().toString())
                 .endTime(reservation.getEndTime().toString())
                 .isRideSharing(reservation.getIsRideSharing())
