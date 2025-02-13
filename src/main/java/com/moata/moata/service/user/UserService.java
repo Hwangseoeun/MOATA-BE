@@ -29,6 +29,7 @@ public class UserService {
     private final GroupRepository groupRepository;
     private final LikeUserRepository likeUserRepository;
     private final MatchingGroupRepository matchingGroupRepository;
+
     private final GroupService groupService;
 
     public User findById(Long userId) {

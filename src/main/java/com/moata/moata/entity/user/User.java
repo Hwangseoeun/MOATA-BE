@@ -47,6 +47,12 @@ public class User {
         this.longitude = longitude;
     }
 
+    public void saveUserLocation(UserLocationRequest userLocationSaveRequest) {
+        this.location = userLocationSaveRequest.getLocation();
+        this.latitude = userLocationSaveRequest.getLatitude();
+        this.longitude = userLocationSaveRequest.getLongitude();
+    }
+
     public void updateUserName(UserNameUpdateRequest userNameUpdateRequest) {
         this.name = userNameUpdateRequest.getName();
     }
