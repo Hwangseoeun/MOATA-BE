@@ -15,6 +15,7 @@ public class GroupSaveRequest {
 
     public Group toModel(final User user) {
         return Group.builder()
+                .ownerId(user)
                 .hasCar(hasCar)
                 .favoriteArea(favoriteArea)
                 .coOwnerMax(coOwnerMax)
