@@ -4,14 +4,13 @@ import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.group.GroupInfoResponse;
 import com.moata.moata.dto.user.*;
 import com.moata.moata.entity.group.Group;
+import com.moata.moata.entity.group.MatchingGroup;
 import com.moata.moata.entity.user.LikeUser;
 import com.moata.moata.entity.user.User;
 import com.moata.moata.repository.group.GroupRepository;
 import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.user.LikeUserRepository;
 import com.moata.moata.repository.user.UserRepository;
-
-import com.moata.moata.service.group.GroupService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +66,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         int sharedCarCnt = matchingGroupRepository.countByParticipantId(user);
-        return UserProfileResponse.from(user, sharedCarCnt);
+        List<Group> groups = matchingGroupRepository.findByParticipantId(user).stream().map(MatchingGroup::getGroupId).toList();
+        return UserProfileResponse.from(user, sharedCarCnt, groups);
     }
 
     @Transactional

@@ -51,8 +51,9 @@ public class ArticleService {
 
     private List<ArticleResponse> entityToResponse(List<Article> articles, long userId) {
         //유저 구현 시 사용
-        String userName = userRepository.findUserNameByUserId(userId)
-                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
+        String userName = userRepository.findById(userId)
+                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"))
+                                .getName();
 
         return articles.stream().map(article -> {
             int commentCount = articleCommentRepository.countByArticleIdAndCommentBool(article, true);
@@ -88,8 +89,9 @@ public class ArticleService {
 
     public void saveLike(long articleId, long userId) {
         Article article = articleRepository.findByArticleId(articleId).orElseThrow(NoSuchElementException::new);
-        String userName = userRepository.findUserNameByUserId(userId)
-                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
+        String userName = userRepository.findById(userId)
+                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"))
+                                .getName();
 
         ArticleComment like = ArticleComment.builder()
                 .articleId(article)
@@ -122,8 +124,9 @@ public class ArticleService {
     }
 
     public void deleteLike(long userId, long articleId) {
-        String userName = userRepository.findUserNameByUserId(userId)
-                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
+        String userName = userRepository.findById(userId)
+                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"))
+                                .getName();
 
         Article article = articleRepository.findById(articleId).orElseThrow(NoSuchElementException::new);
         articleCommentRepository.deleteByArticleIdAndCreatedByAndCommentBool(article, userName,false);
