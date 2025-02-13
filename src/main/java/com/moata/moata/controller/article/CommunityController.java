@@ -1,5 +1,6 @@
 package com.moata.moata.controller.article;
 
+import com.moata.moata.config.jwt.TokenProvider;
 import com.moata.moata.dto.article.ArticleCommentSaveRequest;
 import com.moata.moata.dto.article.ArticleResponse;
 import com.moata.moata.dto.article.ArticleSaveRequest;
@@ -21,16 +22,23 @@ import java.util.List;
 public class CommunityController {
 
     private final ArticleService articleService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ArticleResponse>> getArticleAll(@AuthenticationPrincipal long userId) {
+    public ResponseEntity<List<ArticleResponse>> getArticleAll(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         return ResponseEntity.ok().body(articleService.findAll(userId));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ArticleResponse>> searchArticle(@AuthenticationPrincipal long userId,
+    public ResponseEntity<List<ArticleResponse>> searchArticle(@RequestHeader("Authorization") String authorizationHeader,
                                                                @RequestParam(name = "keyword") String keyword,
                                                                @RequestParam(name = "userName") String userName) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         return ResponseEntity.ok().body(articleService.findByKeywordOrUserId(keyword, userId, userName));
     }
 
@@ -51,8 +59,11 @@ public class CommunityController {
     }
 
     @PostMapping("rule")
-    public ResponseEntity<String> saveGroupRule(@AuthenticationPrincipal long userId,
+    public ResponseEntity<String> saveGroupRule(@RequestHeader("Authorization") String authorizationHeader,
                                                 @RequestBody GroupRuleSaveRequest groupRuleSaveRequest) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         articleService.saveGroupRule(userId, groupRuleSaveRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -82,7 +93,11 @@ public class CommunityController {
     }
 
     @DeleteMapping("{article_id}/like")
-    public ResponseEntity<String> deleteLike(@PathVariable("article_id") long articleId, @AuthenticationPrincipal Long userId) {
+    public ResponseEntity<String> deleteLike(@RequestHeader("Authorization") String authorizationHeader,
+                                             @PathVariable("article_id") long articleId) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        Long userId = tokenProvider.getUserId(token);
+
         articleService.deleteLike(articleId, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
