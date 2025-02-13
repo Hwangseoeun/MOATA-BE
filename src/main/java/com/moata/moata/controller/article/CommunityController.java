@@ -42,12 +42,12 @@ public class CommunityController {
         return ResponseEntity.ok().body(articleService.findByKeywordOrUserId(keyword, userId, userName));
     }
 
-    @GetMapping("{article_id}")
+    @GetMapping("/{article_id}")
     public ResponseEntity<ArticleWithCommentResponse> getArticleWithComment(@PathVariable("article_id") long articleId) {
         return ResponseEntity.ok().body(articleService.findByIdWithComment(articleId));
     }
 
-    @GetMapping("rule")
+    @GetMapping("/rule")
     public ResponseEntity<GroupRuleResponse> getGroupRule(@RequestHeader("Authorization") String authorizationHeader) {
         String token = authorizationHeader.replace("Bearer ", "");
         Long userId = tokenProvider.getUserId(token);
@@ -61,7 +61,7 @@ public class CommunityController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("rule")
+    @PostMapping("/rule")
     public ResponseEntity<String> saveGroupRule(@RequestHeader("Authorization") String authorizationHeader,
                                                 @RequestBody GroupRuleSaveRequest groupRuleSaveRequest) {
         String token = authorizationHeader.replace("Bearer ", "");
@@ -71,31 +71,31 @@ public class CommunityController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("{article_id}")
+    @PostMapping("/{article_id}/comment")
     public ResponseEntity<String> saveComment(@PathVariable("article_id") long articleId, @RequestBody ArticleCommentSaveRequest articleCommentSaveRequest ) {
         articleService.saveComment(articleId, articleCommentSaveRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("{article_id}/like")
+    @PostMapping("/{article_id}/like")
     public ResponseEntity<String> saveLike(@PathVariable("article_id") long articleId, @AuthenticationPrincipal Long userId) {
         articleService.saveLike(articleId, userId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{article_id}")
+    @DeleteMapping("/{article_id}")
     public ResponseEntity<String> deleteArticle(@PathVariable("article_id") long articleId) {
         articleService.deleteArticle(articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("comment/{comment_id}")
+    @DeleteMapping("/{article_id}/comment/{comment_id}")
     public ResponseEntity<String> deleteComment(@PathVariable("comment_id") long commentId) {
         articleService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("{article_id}/like")
+    @DeleteMapping("/{article_id}/like")
     public ResponseEntity<String> deleteLike(@RequestHeader("Authorization") String authorizationHeader,
                                              @PathVariable("article_id") long articleId) {
         String token = authorizationHeader.replace("Bearer ", "");
