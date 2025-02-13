@@ -34,10 +34,15 @@ public class ReservationService {
         return matchingGroupRepository.findByParticipantId(user).stream().map(MatchingGroup::getGroupId).collect(Collectors.toList());
     }
 
-    //matching_group 적용 이후 추가 수정
     public List<ReservationResponse> findAll(long userId) {
         List<Reservation> reservations = reservationRepository.findByGroupIdIn(findMatchingGroup(userId));
-        return reservations.stream().map(ReservationResponse::from).toList();
+
+        return reservations.stream()
+                .map(reservation -> {
+                    String userName = reservation.getReserverId().getName();
+                    return ReservationResponse.from(reservation, userName);
+                })
+                .toList();
     }
 
     public List<ReservationResponse> searchReservation(long myId, String startDate, String endDate, long userId) {
@@ -52,7 +57,12 @@ public class ReservationService {
         User user = userRepository.findById(userId)
                 .orElse(null);
 
-        return reservationRepository.searchReservations(from, to, user, findMatchingGroup(myId)).stream().map(ReservationResponse::from).toList();
+        return reservationRepository.searchReservations(from, to, user, findMatchingGroup(myId)).stream()
+                .map(reservation -> {
+                    String userName = reservation.getReserverId().getName();
+                    return ReservationResponse.from(reservation, userName);
+                })
+                .toList();
     }
 
     public List<ReservationResponse> findMy(long userId) {
@@ -60,7 +70,12 @@ public class ReservationService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저"));
 
         List<Reservation> reservations = reservationRepository.findByReserverId(user);
-        return reservations.stream().map(ReservationResponse::from).toList();
+        return reservations.stream()
+                .map(reservation -> {
+                    String userName = reservation.getReserverId().getName();
+                    return ReservationResponse.from(reservation, userName);
+                })
+                .toList();
     }
 
     public void saveReservation(long userId, ReservationSaveRequest saveRequest) {
