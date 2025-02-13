@@ -11,12 +11,17 @@ import com.moata.moata.repository.group.GroupRepository;
 import com.moata.moata.repository.group.MatchingGroupRepository;
 import com.moata.moata.repository.user.LikeUserRepository;
 import com.moata.moata.repository.user.UserRepository;
+
+import com.moata.moata.service.group.GroupService;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.moata.moata.common.DistanceCalculator.calculateDistance;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,8 @@ public class UserService {
     private final GroupRepository groupRepository;
     private final LikeUserRepository likeUserRepository;
     private final MatchingGroupRepository matchingGroupRepository;
+
+    private final GroupService groupService;
 
     public User findById(Long userId) {
         return userRepository.findById(userId)
@@ -93,17 +100,23 @@ public class UserService {
         likeUserRepository.delete(likeUser);
     }
 
+    @Transactional(readOnly = true)
     public List<GroupInfoResponse> getLikedUsers(Long userId) {
-        User user = userRepository.findById(userId)
+        User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Group group = groupRepository.findByOwnerId(user)
-                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
-
-        List<LikeUser> likedUsers = likeUserRepository.findAllByLiker(user);
+        List<LikeUser> likedUsers = likeUserRepository.findAllByLiker(currentUser);
 
         return likedUsers.stream()
-                .map(like -> GroupInfoResponse.from(group))
+                .map(like -> {
+                    User likedUser = like.getTarget();
+                    Group likedUserGroup = groupRepository.findByOwnerId(likedUser)
+                            .orElseThrow(() -> new EntityNotFoundException("Group not found for liked user: " + likedUser.getUserId()));
+
+                    double distance = calculateDistance(currentUser.getLatitude(), currentUser.getLongitude(), likedUser.getLatitude(), likedUser.getLongitude());
+
+                    return GroupInfoResponse.from(likedUserGroup, distance);
+                })
                 .toList();
     }
 

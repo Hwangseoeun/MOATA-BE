@@ -37,25 +37,14 @@ public class User {
     @Column(name = "longitude")
     private double longitude;
 
-/*    @Column(name = "shared_car_cnt", nullable = false)
-    @ColumnDefault("0")
-    private int sharedCarCnt;*/
-
     @Builder
-    public User(String name, String phone, UserTelcoType telco, String location, double latitude, double longitude/*, int sharedCarCnt*/) {
+    public User(String name, String phone, UserTelcoType telco, String location, double latitude, double longitude) {
         this.name = name;
         this.phone = phone;
         this.telco = telco;
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
-/*        this.sharedCarCnt = sharedCarCnt;*/
-    }
-
-    public void saveUserLocation(UserLocationRequest userLocationSaveRequest) {
-        this.location = userLocationSaveRequest.getLocation();
-        this.latitude = userLocationSaveRequest.getLatitude();
-        this.longitude = userLocationSaveRequest.getLongitude();
     }
 
     public void updateUserName(UserNameUpdateRequest userNameUpdateRequest) {

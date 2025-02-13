@@ -45,19 +45,34 @@ public class GroupController {
     }
 
     @GetMapping("/group/all")
-    public ResponseEntity<List<GroupInfoResponse>> findAllGroups() {
-        List<GroupInfoResponse> groups = groupService.findAllGroups();
+    public ResponseEntity<List<GroupInfoResponse>> findAllGroups(@RequestHeader("Authorization") String authorizationHeader) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
+
+        List<GroupInfoResponse> groups = groupService.findAllGroups(userId);
         return ResponseEntity.ok().body(groups);
     }
 
     @GetMapping("/group/search")
-    public ResponseEntity<List<GroupInfoResponse>> searchGroups(GroupSearchCondition condition) {
-        return ResponseEntity.ok().body(groupService.searchGroups(condition));
+    public ResponseEntity<List<GroupInfoResponse>> searchGroups(@RequestHeader("Authorization") String authorizationHeader, GroupSearchCondition condition) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
+
+        return ResponseEntity.ok().body(groupService.searchGroups(condition, userId));
     }
 
     @GetMapping("/group/{groupId}")
-    public ResponseEntity<GroupDetailInfoResponse> detailGroupInfo(@PathVariable("groupId") Long groupId) {
-        GroupDetailInfoResponse response = groupService.findGroupByGroupId(groupId);
+    public ResponseEntity<GroupDetailInfoResponse> detailGroupInfo(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("groupId") Long groupId) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        Long userId = tokenProvider.getUserId(token);
+
+        GroupDetailInfoResponse response = groupService.findGroupByGroupId(groupId, userId);
         return ResponseEntity.ok().body(response);
     }
 

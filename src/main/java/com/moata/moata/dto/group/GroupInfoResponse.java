@@ -14,16 +14,17 @@ public class GroupInfoResponse {
     private String carModelName;
     private int coOwnerMax;
     private int matchedCount;
+    private double distance;
 
-    //추후 User 추가해야 함(user_id를 통해 ownerName, ownerLocation 조회)
-    public static GroupInfoResponse from(Group group) {
+    public static GroupInfoResponse from(Group group, double distance) {
         return GroupInfoResponse.builder()
                 .groupId(group.getGroupId())
-                .ownerName(null)
-                .ownerLocation(null)
+                .ownerName(group.getOwnerId().getName())
+                .ownerLocation(group.getOwnerId().getLocation())
                 .carModelName(group.getCarModelName())
                 .coOwnerMax(group.getCoOwnerMax())
                 .matchedCount(group.getMatchedCount())
+                .distance(distance)
                 .build();
     }
 }
